@@ -101,7 +101,7 @@ public class Game {
         while(true) {
             player1.getCurrentRoom().printDescription();
             player1.getCurrentRoom().printItems();
-            //player1.getCurrentRoom().getEnemy
+            player1.getCurrentRoom().printEnemies();
             System.out.print(">> ");
             String input = s.nextLine();
             String[] words = input.split(" ");
@@ -114,6 +114,8 @@ public class Game {
             if(command.equals("quit")) {
                 s.close();
                 System.exit(0);
+            } else if(command.equals("help")) {
+                System.out.println("Command List: go(letter of cardinal direction), grab, drop, quit");
             } else if(command.equals("go")) {
                 if(modifier.equals("n")) {
                     player1.move("n");
@@ -131,7 +133,9 @@ public class Game {
                 player1.grab(modifier);
             } else if(command.equals("drop")) {
                 player1.drop(modifier);                
-            } 
+            } else if(command.equals("fight")) {
+                
+            }
         }
     }
 }

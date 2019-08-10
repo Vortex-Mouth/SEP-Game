@@ -1,5 +1,6 @@
 package game;
 
+import java.util.Scanner;
 import java.util.HashMap;
 
 public class Player {
@@ -61,6 +62,18 @@ public class Player {
        }
        else {
            System.out.println("You don't have that!");
+       }
+   }
+
+   public void fight(String enemy) {
+       Scanner s = new Scanner(System.in);
+
+       if(currentRoom.getEnemy(enemy) != null) {
+           System.out.println("What do you do?");
+           System.out.println(">> ");
+           String input = s.nextLine();
+           String[] words = input.split(" ");
+           String command = words[0];
        }
    }
 

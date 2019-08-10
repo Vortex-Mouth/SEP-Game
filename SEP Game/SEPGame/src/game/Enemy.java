@@ -3,8 +3,9 @@ package game;
 public class Enemy {
     public String name;
     public String description;
-    public int health;
-    public int power;
+    protected Room currentRoom;
+    protected int health;
+    protected int power;
 
     public String getName() {
         return name;
@@ -21,5 +22,32 @@ public class Enemy {
     }
     public String getDescription() {
         return description;
+    }
+
+    public Room getCurrentRoom() {
+        return currentRoom;
+    }
+    public void setCurrentRoom(Room pRoom) {
+        currentRoom = pRoom;
+    }
+
+    public void printHealth() {
+        System.out.println(health);
+    }
+    public void setHealth(int pHealth) {
+        health = pHealth;
+    }
+    public int getHealth() {
+        return health;
+    }
+
+    public void printPower() {
+        System.out.println(power);
+    }
+    public void setPower(int pPower) {
+        power = pPower;
+    }
+    public int getPower() {
+        return power;
     }
 }

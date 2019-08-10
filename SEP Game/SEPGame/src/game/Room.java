@@ -62,4 +62,16 @@ public class Room {
             System.out.println((String)mapElement.getKey() + " : " + item.getDescription()); 
         } 
     }
+    public void printEnemies() { 
+        Iterator<Map.Entry<String,Enemy>> enemyIterator = itsEnemies.entrySet().iterator(); 
+   
+        System.out.print("Enemies in room: "); 
+  
+        while (enemyIterator.hasNext()) { 
+            Map.Entry<String,Enemy> mapElement = (Map.Entry<String,Enemy>)enemyIterator.next(); 
+            Enemy enemy = (Enemy)mapElement.getValue();
+            System.out.print((String)mapElement.getKey() + " : " + enemy.getDescription()); 
+        } 
+    }
+    
 }

@@ -1,11 +1,13 @@
 package game;
 
-import java.util.Scanner;
+//import java.util.Scanner;
 import java.util.HashMap;
 
 public class Player {
    public String name;
    protected Room currentRoom;
+   protected int health;
+   protected int power;
    protected HashMap<String,Item> itsItems = new HashMap<String,Item>();
 
    /*public void Player() {
@@ -21,6 +23,26 @@ public class Player {
    public Item getItem(String pString) {
         return itsItems.get(pString);
    }
+
+   public void printHealth() {
+        System.out.println(health);
+    }
+   public void setHealth(int pHealth) {
+        health = pHealth;
+    }
+   public int getHealth() {
+        return health;
+    }
+
+   public void printPower() {
+        System.out.println(power);
+    }
+   public void setPower(int pPower) {
+        power = pPower;
+    }
+   public int getPower() {
+        return power;
+    }
 
    public void move(String direction) {
         if(direction == "n") {
@@ -65,7 +87,7 @@ public class Player {
        }
    }
 
-   public void fight(String enemy) {
+   /*public void fight(String enemy) {
        Scanner s = new Scanner(System.in);
 
        if(currentRoom.getEnemy(enemy) != null) {
@@ -74,8 +96,11 @@ public class Player {
            String input = s.nextLine();
            String[] words = input.split(" ");
            String command = words[0];
+           if(input.equals("punch")) {
+               player1.setPower(1);
+           }
        }
-   }
+   }*/
 
    public Room getCurrentRoom() {
        return currentRoom;

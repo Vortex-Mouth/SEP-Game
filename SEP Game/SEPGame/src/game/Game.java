@@ -115,7 +115,7 @@ public class Game {
                 s.close();
                 System.exit(0);
             } else if(command.equals("help")) {
-                System.out.println("Command List: go(letter of cardinal direction), grab, drop, quit");
+                System.out.println("Command List: go (letter of cardinal direction), grab (item), drop (item), quit");
             } else if(command.equals("go")) {
                 if(modifier.equals("n")) {
                     player1.move("n");
@@ -134,7 +134,15 @@ public class Game {
             } else if(command.equals("drop")) {
                 player1.drop(modifier);                
             } else if(command.equals("fight")) {
-                
+                if(player1.currentRoom.getEnemy(modifier) != null) {
+                    System.out.println("What do you do?");
+                    System.out.println(">> ");
+                    String fightCommand = s.nextLine();
+                    if(fightCommand.equals("punch")) {
+                        player1.setPower(1);
+                    }
+                    player1.currentRoom.getEnemy(modifier).getHealth() -= player1.power;
+                }
             }
         }
     }

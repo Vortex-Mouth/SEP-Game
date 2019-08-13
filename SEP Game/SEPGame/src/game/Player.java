@@ -70,7 +70,7 @@ public class Player {
        if(currentRoom.getItem(item) != null) {
             itsItems.put(item, currentRoom.getItem(item));
             currentRoom.removeItem(item);
-            System.out.println("you grabbed the " + item + "!");
+            System.out.println("You grabbed the " + item + "!");
        }
        else {
            System.out.println("There is no " + item + " here.");
@@ -80,7 +80,7 @@ public class Player {
        if(itsItems.get(item) != null) {
             currentRoom.addItem(item, itsItems.get(item));
             itsItems.remove(item);
-            System.out.println("you dropped the " + item + "!");
+            System.out.println("You dropped the " + item + "!");
        }
        else {
            System.out.println("You don't have that!");

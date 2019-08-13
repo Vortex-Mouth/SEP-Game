@@ -102,7 +102,7 @@ public class Game {
             player1.getCurrentRoom().printDescription();
             player1.getCurrentRoom().printItems();
             player1.getCurrentRoom().printEnemies();
-            System.out.print(">> ");
+            System.out.println(">> ");
             String input = s.nextLine();
             String[] words = input.split(" ");
             String command = words[0];
@@ -115,7 +115,7 @@ public class Game {
                 s.close();
                 System.exit(0);
             } else if(command.equals("help")) {
-                System.out.println("Command List: go (letter of cardinal direction), grab (item), drop (item), quit");
+                System.out.println("Command List: go (letter of cardinal direction), grab (item), drop (item), fight, quit");
             } else if(command.equals("go")) {
                 if(modifier.equals("n")) {
                     player1.move("n");
@@ -135,13 +135,19 @@ public class Game {
                 player1.drop(modifier);                
             } else if(command.equals("fight")) {
                 if(player1.currentRoom.getEnemy(modifier) != null) {
-                    System.out.println("What do you do?");
-                    System.out.println(">> ");
-                    String fightCommand = s.nextLine();
-                    if(fightCommand.equals("punch")) {
-                        player1.setPower(1);
+                    while(player1.currentRoom.getEnemy(modifier).health != 0) {
+                        System.out.println("What do you do?");
+                        System.out.println(">> ");
+                        String fightCommand = s.nextLine();
+                        if(fightCommand.equals("punch")) {
+                            player1.setPower(1);
+                            System.out.println("You punched the enemy for 1 damage!");
+                        }
+                        player1.currentRoom.getEnemy(modifier).health -= player1.power;
+                        player1.setPower(0);
                     }
-                    player1.currentRoom.getEnemy(modifier).getHealth() -= player1.power;
+                    System.out.println("You defeated the enemy!");
+                    roomList.get("Room3").removeEnemy(player1.currentRoom.getEnemy(modifier).getName());
                 }
             }
         }

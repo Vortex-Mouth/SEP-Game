@@ -3,12 +3,14 @@ package game;
 import java.util.Scanner;
 import java.lang.String;
 import java.util.HashMap;
+import java.util.Random;
 
 public class Game {
     //Creating the player
     static Player player1 = new Player();
     public static void main(String[] args) throws Exception {
         Scanner s = new Scanner(System.in);
+        Random r = new Random();
 
         HashMap<String,Room> roomList = new HashMap<String,Room>();
         HashMap<String,Item> itemList = new HashMap<String,Item>();
@@ -86,11 +88,12 @@ public class Game {
         mole.name = ("mole");
 
         //Creating enemy information
-        mole.health = 3;
+        mole.health = 30;
         mole.power = 1;
         mole.setDescription("There is a weak, but grumpy mole in the room that doesn't like you very much.");
         enemyList.put(mole.getName(),mole);
         roomList.get("Room3").addEnemy(mole.getName(),mole);
+        mole.setCurrentRoom(roomList.get("Room3"));
 
         //Creating player information
         player1.name = "Carson";
@@ -135,19 +138,19 @@ public class Game {
                 player1.drop(modifier);                
             } else if(command.equals("fight")) {
                 if(player1.currentRoom.getEnemy(modifier) != null) {
-                    while(player1.currentRoom.getEnemy(modifier).health != 0) {
+                    while(player1.currentRoom.getEnemy(modifier).health > 0) {
                         System.out.println("What do you do?");
                         System.out.println(">> ");
                         String fightCommand = s.nextLine();
                         if(fightCommand.equals("punch")) {
-                            player1.setPower(1);
-                            System.out.println("You punched the enemy for 1 damage!");
+                            player1.setPower(r.nextInt(10));
+                            System.out.println("You punched the enemy for " + player1.getPower() + " damage!");
                         }
-                        player1.currentRoom.getEnemy(modifier).health -= player1.power;
+                        player1.currentRoom.getEnemy(modifier).health -= player1.getPower();
                         player1.setPower(0);
                     }
                     System.out.println("You defeated the enemy!");
-                    roomList.get("Room3").removeEnemy(player1.currentRoom.getEnemy(modifier).getName());
+                    player1.currentRoom.removeEnemy(player1.currentRoom.getEnemy(modifier).getName());
                 }
             }
         }

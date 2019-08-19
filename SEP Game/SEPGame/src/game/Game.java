@@ -73,7 +73,7 @@ public class Game {
         //Creating item information
         itemList.put(missile.getName(),missile);
         roomList.get("Room2").addItem(missile.getName(),missile);
-        missile.setDescription("There is an inactive missile about the size of your arm that can be fired at things.");
+        missile.setDescription("There is a missile launcher laying conveniently on the pedestal that you can use to shoot at things.");
 
         itemList.put(key.getName(),key);
         roomList.get("Room5").addItem(key.getName(),key);
@@ -98,6 +98,7 @@ public class Game {
         //Creating player information
         player1.name = "Carson";
         player1.setCurrentRoom(roomList.get("Room1"));
+        player1.setHealth(30);
 
         //Where game starts
         System.out.println("One day you come into existence.You don't know anything about who you are, or where you are(unless you've played this before). You do have some really cool looking mechanical arms though.(Type 'help' to see commands you can do.)");
@@ -113,13 +114,16 @@ public class Game {
             if (words.length > 1) {
                 modifier = words[1];
             }
-
+            
+            //Creating commands player can use
             if(command.equals("quit")) {
                 s.close();
                 System.exit(0);
-            } else if(command.equals("help")) {
+            } 
+            else if(command.equals("help")) {
                 System.out.println("Command List: go (letter of cardinal direction), grab (item), drop (item), fight, quit");
-            } else if(command.equals("go")) {
+            } 
+            else if(command.equals("go")) {
                 if(modifier.equals("n")) {
                     player1.move("n");
                 }
@@ -132,25 +136,56 @@ public class Game {
                 else if(modifier.equals("e")) {
                     player1.move("e");
                 }
-            } else if(command.equals("grab")) {
+            } 
+            else if(command.equals("grab")) {
                 player1.grab(modifier);
-            } else if(command.equals("drop")) {
+            } 
+            else if(command.equals("drop")) {
                 player1.drop(modifier);                
-            } else if(command.equals("fight")) {
+            } 
+
+            else if(command.equals("fight")) {
                 if(player1.currentRoom.getEnemy(modifier) != null) {
-                    while(player1.currentRoom.getEnemy(modifier).health > 0) {
+
+                    //When fight begins
+                    System.out.println("You are attacked by the " + player1.currentRoom.getEnemy(modifier).getName() + "!");
+                    while(player1.currentRoom.getEnemy(modifier).health > 0 && player1.getHealth() > 0) {
+
+                        //Player's turn
                         System.out.println("What do you do?");
                         System.out.println(">> ");
                         String fightCommand = s.nextLine();
+
+                        //Creating player actions
                         if(fightCommand.equals("punch")) {
-                            player1.setPower(r.nextInt(10));
+                            player1.setPower(r.nextInt(6));
                             System.out.println("You punched the enemy for " + player1.getPower() + " damage!");
                         }
                         player1.currentRoom.getEnemy(modifier).health -= player1.getPower();
                         player1.setPower(0);
+                        
+                        //Enemy's turn
+                        if(player1.currentRoom.getEnemy(modifier).health > 0) {
+                            if(player1.currentRoom.getEnemy(modifier) == mole) {
+                                int attack = r.nextInt(4);
+                                if(attack == 3) {
+                                    mole.setPower(r.nextInt(10) + 5);
+                                    System.out.println("The mole attacks you with a giant drill and deals " + mole.getPower() + " damage!");
+                                } else {
+                                    mole.setPower(r.nextInt(6));
+                                    System.out.println("The mole swipes its claws and deals " + mole.getPower() + " damage!");
+                                }
+                            }
+                            player1.health -= player1.currentRoom.getEnemy(modifier).getPower();
+                        }
                     }
-                    System.out.println("You defeated the enemy!");
-                    player1.currentRoom.removeEnemy(player1.currentRoom.getEnemy(modifier).getName());
+                    //Fight ends
+                    if(player1.health <= 0) {
+                        System.out.println("Your health has dropped to 0!");
+                    } else {
+                        System.out.println("You defeated the enemy!");
+                        player1.currentRoom.removeEnemy(player1.currentRoom.getEnemy(modifier).getName());
+                    }
                 }
             }
         }

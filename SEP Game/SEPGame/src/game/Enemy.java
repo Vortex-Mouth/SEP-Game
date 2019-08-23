@@ -10,9 +10,9 @@ public class Enemy {
     public String getName() {
         return name;
     } 
-    /*public void setName(String pString) {
+    public void setName(String pString) {
         name = pString;
-    }*/
+    }
 
     public void printDescription() {
         System.out.println(description);

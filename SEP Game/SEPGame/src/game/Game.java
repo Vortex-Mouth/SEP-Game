@@ -42,27 +42,33 @@ public class Game {
 
         roomList.get("Room5").eastRoom = roomList.get("Room4");
         roomList.get("Room5").southRoom = roomList.get("Room7");
-        roomList.get("Room5").setDescription("");
+        roomList.get("Room5").setDescription("You are in a very dark room and foreboding mechanical room.");
 
         roomList.get("Room6").westRoom = roomList.get("Room4");
         roomList.get("Room6").southRoom = roomList.get("Room8");
+        roomList.get("Room6").setDescription("This appears to be a storage room for some helpful items.");
 
         roomList.get("Room7").westRoom = roomList.get("Room5");
         roomList.get("Room7").southRoom = roomList.get("Room9");
         roomList.get("Room7").eastRoom = roomList.get("Room8");
         roomList.get("Room7").northRoom = roomList.get("Room4");
+        roomList.get("Room7").setDescription("You're in.....space? To the south are celestial objects,to the east is a manmade object,to the north is a planet with the factory from before.");
 
         roomList.get("Room8").westRoom = roomList.get("Room7");
         roomList.get("Room8").northRoom = roomList.get("Room6");
         roomList.get("Room8").southRoom = roomList.get("Room10");
+        roomList.get("Room8").setDescription("You have arrived at a space station.");
 
         roomList.get("Room9").northRoom = roomList.get("Room7");
+        roomList.get("Room9").setDescription("You are now in deeper space and surrounded by stars that should be burning you right now, but I didn't feel like programming...I mean what?");
 
         roomList.get("Room10").northRoom = roomList.get("Room8");
+        roomList.get("Room10").setDescription("Welcome to my throne room.If you know my name,type it when giving a command and I will let you reach the end of this game.Otherwise you will face the terrible fate of DISSATISFACTION!");
+        
 
         //Creating items
-        Item missile = new Item();
-        missile.setName("missile");
+        Item missileLauncher = new Item();
+        missileLauncher.setName("missileLauncher");
 
         Item key = new Item();
         key.setName("key");
@@ -71,9 +77,9 @@ public class Game {
         cleats.setName("cleats");
 
         //Creating item information
-        itemList.put(missile.getName(),missile);
-        roomList.get("Room2").addItem(missile.getName(),missile);
-        missile.setDescription("There is a missile launcher laying conveniently on the pedestal that you can use to shoot at things.");
+        itemList.put(missileLauncher.getName(),missileLauncher);
+        roomList.get("Room2").addItem(missileLauncher.getName(),missileLauncher);
+        missileLauncher.setDescription("There is a missile launcher laying conveniently on the pedestal that you can use to shoot at things.");
 
         itemList.put(key.getName(),key);
         roomList.get("Room5").addItem(key.getName(),key);
@@ -81,15 +87,15 @@ public class Game {
 
         itemList.put(cleats.getName(),cleats);
         roomList.get("Room5").addItem(cleats.getName(),cleats);
-        cleats.setDescription("There is a pair of cleats with very sharp spikes on the bottom.");
+        cleats.setDescription("There is a pair of cleats with very sharp spikes on the bottom.They also work as jet boots.");
 
         //Creating enemies
         Enemy mole = new Enemy();
-        mole.name = ("mole");
+        mole.setName("mole");
 
         //Creating enemy information
-        mole.health = 30;
-        mole.power = 1;
+        mole.setHealth(30);
+        mole.setPower(1);
         mole.setDescription("There is a weak, but grumpy mole in the room that doesn't like you very much.");
         enemyList.put(mole.getName(),mole);
         roomList.get("Room3").addEnemy(mole.getName(),mole);
@@ -181,7 +187,9 @@ public class Game {
                     }
                     //Fight ends
                     if(player1.health <= 0) {
-                        System.out.println("Your health has dropped to 0!");
+                        System.out.println("Your health has dropped to 0! YOU LOSE. GOOD DAY HUMAN PERSON.");
+                        s.close();
+                        System.exit(0);
                     } else {
                         System.out.println("You defeated the enemy!");
                         player1.currentRoom.removeEnemy(player1.currentRoom.getEnemy(modifier).getName());

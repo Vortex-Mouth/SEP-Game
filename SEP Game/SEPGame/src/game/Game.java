@@ -42,7 +42,7 @@ public class Game {
 
         roomList.get("Room5").eastRoom = roomList.get("Room4");
         roomList.get("Room5").southRoom = roomList.get("Room7");
-        roomList.get("Room5").setDescription("You are in a very dark room and foreboding mechanical room.");
+        roomList.get("Room5").setDescription("You are in a very dark and foreboding mechanical room.");
 
         roomList.get("Room6").westRoom = roomList.get("Room4");
         roomList.get("Room6").southRoom = roomList.get("Room8");
@@ -68,13 +68,16 @@ public class Game {
 
         //Creating items
         Item missileLauncher = new Item();
-        missileLauncher.setName("missileLauncher");
+        missileLauncher.setName("missile launcher");
 
         Item key = new Item();
         key.setName("key");
 
         Item cleats = new Item();
         cleats.setName("cleats");
+
+        Item drill = new Item();
+        drill.setName("drill");
 
         //Creating item information
         itemList.put(missileLauncher.getName(),missileLauncher);
@@ -89,21 +92,30 @@ public class Game {
         roomList.get("Room5").addItem(cleats.getName(),cleats);
         cleats.setDescription("There is a pair of cleats with very sharp spikes on the bottom.They also work as jet boots.");
 
+        itemList.put(drill.getName(),drill);
+        drill.setDescription("The mole dropped his drill. It's a sharp and powerful tool.");
+
         //Creating enemies
         Enemy mole = new Enemy();
         mole.setName("mole");
 
+        Enemy carson = new Enemy();
+        carson.setName("carson");
+
         //Creating enemy information
         mole.setHealth(30);
-        mole.setPower(1);
         mole.setDescription("There is a weak, but grumpy mole in the room that doesn't like you very much.");
         enemyList.put(mole.getName(),mole);
         roomList.get("Room3").addEnemy(mole.getName(),mole);
         mole.setCurrentRoom(roomList.get("Room3"));
 
+        carson.setHealth(420);
+        carson.setDescription("So you know who I am. I am the creator of everything you have seen. The purpose of all of it is to create a project that challenges and builds my skills. However, I need this game to serve some sort of purpose to get a good grade. That purpose is defeating me. Can you grant me an A+ performance?");
+        enemyList.put(carson.getName(),carson);
+
         //Creating player information
         player1.name = "Carson";
-        player1.setCurrentRoom(roomList.get("Room1"));
+        player1.setCurrentRoom(roomList.get("Room2"));
         player1.setHealth(30);
 
         //Where game starts
@@ -150,6 +162,48 @@ public class Game {
                 player1.drop(modifier);                
             } 
 
+            else if(command.equals("carson")) {
+                player1.getCurrentRoom().addEnemy(carson.getName(),carson);
+
+                //When final fight begins
+                System.out.print("You are attacked by me!");
+                while(carson.health > 0 && player1.getHealth() > 0) {
+
+                    //Player's turn in final boss
+                    System.out.println("What do you do?");
+                    System.out.println(">> ");
+                    String fightCommand = s.nextLine();
+
+                    //Creating player actions
+                    if(fightCommand.equals("help")) {
+                        System.out.println("punch, check, (You can also attack by typing in an item, like missile)");
+                        System.out.println("What do you do?");
+                        System.out.println(">> ");
+                        fightCommand = s.nextLine();
+                    }
+                    if(fightCommand.equals("punch")) {
+                        player1.setPower(r.nextInt(6));
+                        System.out.println("You punched the enemy for " + player1.getPower() + " damage!");
+                    } else if(fightCommand.equals("missile")) {
+                        player1.setPower(r.nextInt(12) + 6);
+                        System.out.println("You shot a missile at the enemy for " + player1.getPower() + " damage!");
+                    }
+                    player1.currentRoom.getEnemy(modifier).health -= player1.getPower();
+                    player1.setPower(0);
+
+                    //Final boss's turn
+                    int attack = r.nextInt(10); 
+                        if(attack == 10) {
+                            player1.setHealth(0);
+                            System.out.println("You can see me type 'player.setHealth(0)'");
+                        } else {
+                             carson.setPower(r.nextInt(25) + 20);
+                            System.out.println("I type on a computer and you feel like you have less health!");
+                        }
+                    player1.health -= player1.currentRoom.getEnemy(modifier).getPower();
+                }
+            }
+
             else if(command.equals("fight")) {
                 if(player1.currentRoom.getEnemy(modifier) != null) {
 
@@ -163,15 +217,26 @@ public class Game {
                         String fightCommand = s.nextLine();
 
                         //Creating player actions
+                        if(fightCommand.equals("help")) {
+                            System.out.println("punch, check, (You can also attack by typing in an item, like missile)");
+                            System.out.println("What do you do?");
+                            System.out.println(">> ");
+                            fightCommand = s.nextLine();
+                        }
                         if(fightCommand.equals("punch")) {
                             player1.setPower(r.nextInt(6));
                             System.out.println("You punched the enemy for " + player1.getPower() + " damage!");
+                        } else if(fightCommand.equals("missile")) {
+                            player1.setPower(r.nextInt(12) + 6);
+                            System.out.println("You shot a missile at the enemy for " + player1.getPower() + " damage!");
                         }
                         player1.currentRoom.getEnemy(modifier).health -= player1.getPower();
                         player1.setPower(0);
                         
                         //Enemy's turn
                         if(player1.currentRoom.getEnemy(modifier).health > 0) {
+
+                            //mole's turn
                             if(player1.currentRoom.getEnemy(modifier) == mole) {
                                 int attack = r.nextInt(4);
                                 if(attack == 3) {
@@ -181,17 +246,21 @@ public class Game {
                                     mole.setPower(r.nextInt(6));
                                     System.out.println("The mole swipes its claws and deals " + mole.getPower() + " damage!");
                                 }
-                            }
-                            player1.health -= player1.currentRoom.getEnemy(modifier).getPower();
-                        }
+                            } 
+                        } 
+                        player1.health -= player1.currentRoom.getEnemy(modifier).getPower();
                     }
                     //Fight ends
                     if(player1.health <= 0) {
-                        System.out.println("Your health has dropped to 0! YOU LOSE. GOOD DAY HUMAN PERSON.");
+                        System.out.println("Your health has dropped to 0! YOU LOSE! GOOD DAY HUMAN PERSON!");
                         s.close();
                         System.exit(0);
                     } else {
                         System.out.println("You defeated the enemy!");
+                        String defeatedEnemy = player1.currentRoom.getEnemy(modifier).getName();
+                        if(defeatedEnemy == "mole") {
+                            roomList.get("Room3").addItem(drill.getName(),drill);
+                        } 
                         player1.currentRoom.removeEnemy(player1.currentRoom.getEnemy(modifier).getName());
                     }
                 }

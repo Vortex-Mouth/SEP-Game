@@ -9,6 +9,18 @@ public class Player {
    protected int health;
    protected int power;
    protected HashMap<String,Item> itsItems = new HashMap<String,Item>();
+   
+   String room1 = "Room1";
+   String room2 = "Room2";
+   String room3 = "Room3";
+   String room4 = "Room4";
+   String room5 = "Room5";
+   String room6 = "Room6";
+   String room7 = "Room7";
+   String room8 = "Room8";
+   String room9 = "Room9";
+   String room10 = "Room10";
+   
 
    /*public void Player() {
     itsItems = new HashMap<String,Item>(); 
@@ -48,18 +60,26 @@ public class Player {
         if(direction == "n") {
             if(currentRoom.northRoom != null) {
                 currentRoom = currentRoom.northRoom;
+            } else {
+                System.out.println("You smash your face against a wall.");
             }
         } else if(direction == "s") {
             if(currentRoom.southRoom != null) {
                 currentRoom = currentRoom.southRoom;
+            } else {
+                System.out.println("You smash your face against a wall.");
             }
         } else if(direction == "w") {
             if(currentRoom.westRoom != null) {
                 currentRoom = currentRoom.westRoom;
+            } else {
+                System.out.println("You smash your face against a wall.");
             }
         } else if(direction == "e") {
             if(currentRoom.eastRoom != null) {
                 currentRoom = currentRoom.eastRoom;
+            } else {
+                System.out.println("You smash your face against a wall.");
             }
         }
 
@@ -84,6 +104,15 @@ public class Player {
        }
        else {
            System.out.println("You don't have that!");
+       }
+   }
+
+   public void use(String item) {
+       if(itsItems.get(item) != null) {
+           Item useableItem = new Item();
+           if(useableItem.getName() == itsItems.get("drill").getName() && currentRoom.getName() == room4) {
+
+           }
        }
    }
 

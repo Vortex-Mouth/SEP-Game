@@ -10,17 +10,6 @@ public class Player {
    protected int power;
    protected HashMap<String,Item> itsItems = new HashMap<String,Item>();
    
-   String room1 = "Room1";
-   String room2 = "Room2";
-   String room3 = "Room3";
-   String room4 = "Room4";
-   String room5 = "Room5";
-   String room6 = "Room6";
-   String room7 = "Room7";
-   String room8 = "Room8";
-   String room9 = "Room9";
-   String room10 = "Room10";
-   
 
    /*public void Player() {
     itsItems = new HashMap<String,Item>(); 

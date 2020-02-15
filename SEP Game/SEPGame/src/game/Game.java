@@ -99,6 +99,9 @@ public class Game {
         Enemy mole = new Enemy();
         mole.setName("mole");
 
+        Enemy frank = new Enemy();
+        frank.setName("frank");
+
         Enemy carson = new Enemy();
         carson.setName("carson");
 
@@ -110,14 +113,22 @@ public class Game {
         roomList.get("Room3").addEnemy(mole.getName(),mole);
         mole.setCurrentRoom(roomList.get("Room3"));
 
+        frank.setHealth(100);
+        frank.setDescription("There is a strange robot saying, 'I MUST ELMINATE THE 16TH & 17TH AMENDMENTS!'");
+        frank.setScan("Robot resembling a teenage boy with glasses. Attacks with the 2nd amendment and protects itself with the free market economy. The strongest weapon against it is one that will make it get the point the fastest.");
+        enemyList.put(frank.getName(),frank);
+        roomList.get("Room5").addEnemy(frank.getName(),frank);
+        frank.setCurrentRoom(roomList.get("Room5"));
+
         carson.setHealth(240);
         carson.setDescription("So you know who I am. I am the creator of everything you have seen. The purpose of all of it is to create a project that challenges and builds my skills. However, I need this game to serve some sort of purpose to get a good grade. That purpose is defeating me. Can you grant me an A+ performance?");
         enemyList.put(carson.getName(),carson);
 
         //Creating player information
         player1.name = "Guy";
-        player1.setCurrentRoom(roomList.get("Room3"));
-        player1.setHealth(30);
+        player1.setCurrentRoom(roomList.get("Room5"));
+        player1.setHealth(100);
+        int maxHealth = player1.getHealth();
 
         //Puzzle status
         boolean dirtInSouth = true;
@@ -286,8 +297,23 @@ public class Game {
                             player1.setPower(r.nextInt(6));
                             System.out.println("You punched the enemy for " + player1.getPower() + " damage!");
                         } else if(fightCommand.equals("missile")) {
-                            player1.setPower(r.nextInt(12) + 6);
-                            System.out.println("You shot a missile at the enemy for " + player1.getPower() + " damage!");
+                            if(player1.currentRoom.getEnemy(modifier) != frank) {
+                                player1.setPower(r.nextInt(12) + 6);
+                                System.out.println("You shot a missile at the enemy for " + player1.getPower() + " damage!");
+                            } else {
+                                player1.setPower(r.nextInt(12) + 6);
+                                player1.health -= player1.getPower();
+                                System.out.println("That's just foolish! The Frank Scholze Mech catches the missile and throws it at you for " + player1.getPower() + " damage!");
+                                frank.health += player1.getPower();
+                            }
+                        } else if(fightCommand.equals("drill")) {
+                            if(player1.currentRoom.getEnemy(modifier) != frank) {
+                                player1.setPower(r.nextInt(8) + 6);
+                                System.out.println("You drilled into the enemy for " + player1.getPower() + " damage!");
+                            } else {
+                                player1.setPower(r.nextInt(18) + 9);
+                                System.out.println("You showed Frank how wrong he was by explaining your biggest 'point' and dealed " + player1.getPower() + " damage!");
+                            }
                         }
                         player1.currentRoom.getEnemy(modifier).health -= player1.getPower();
                         player1.setPower(0);
@@ -306,8 +332,21 @@ public class Game {
                                     System.out.println("The mole swipes its claws and deals " + mole.getPower() + " damage!");
                                 }
                             } 
+
+                            //Frank Scholze Mech's turn
+                            else if(player1.currentRoom.getEnemy(modifier) == frank) {
+                                int attack = r.nextInt(8);
+                                if(attack > 4) {
+                                    frank.setPower(r.nextInt(18) + 8);
+                                    System.out.println("The Frank Scholze Mech proudly fires you with his dual wielding AR-15's and deals " + frank.getPower() + " damage!");
+                                } else {
+                                    frank.setPower(r.nextInt(9) + 6);
+                                    System.out.println("The Frank Scholze Mech uses his free speech to shout profanities and deals " + frank.getPower() + " damage!");
+                                }
+                            }
+                            
+                            player1.health -= player1.currentRoom.getEnemy(modifier).getPower();
                         } 
-                        player1.health -= player1.currentRoom.getEnemy(modifier).getPower();
                     }
                     //Fight ends
                     if(player1.health <= 0) {
@@ -321,9 +360,15 @@ public class Game {
                         //End of mole fight
                         if(defeatedEnemy == "mole") {
                             roomList.get("Room3").addItem(drill.getName(),drill);
-                            player1.setHealth(player1.health + 70);
-                            System.out.println("For some reason, your health increased to 100! Your chest hair increased by 5! Your nail polish increased by 2");
+                            System.out.println("For some reason, your health increased by 70! Your chest hair increased by 5! Your nail polish increased by 2");
                         } 
+
+                        //End of Frank fight
+                        else if(defeatedEnemy == "Frank Scholze Mech") {
+                            System.out.println("Your health increased by 70! Your election votes raised by 2,000! Your political correctness increased by 4!");
+                        }
+                        player1.setHealth(maxHealth + 70);
+                        maxHealth = player1.getHealth();
                         player1.currentRoom.removeEnemy(player1.currentRoom.getEnemy(modifier).getName());
                     }
                 }

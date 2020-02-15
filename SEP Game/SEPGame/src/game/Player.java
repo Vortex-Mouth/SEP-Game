@@ -107,14 +107,13 @@ public class Player {
        }
    }
 
-   public void use(String item) {
+   /*public void use(String item) {
        if(itsItems.get(item) != null) {
-           Item useableItem = new Item();
-           if(useableItem.getName() == itsItems.get("drill").getName() && currentRoom.getName() == room4) {
-
+           if(itsItems.get(item) == itsItems.get("drill") && currentRoom.getName() == "") {
+                System.out.print("The drill utterly decimates the dirt blocking the west and south exits!");
            }
        }
-   }
+   }*/
 
    /*public void fight(String enemy) {
        Scanner s = new Scanner(System.in);

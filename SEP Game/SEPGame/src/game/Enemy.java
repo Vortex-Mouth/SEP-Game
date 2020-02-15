@@ -3,6 +3,7 @@ package game;
 public class Enemy {
     public String name;
     public String description;
+    public String scan;
     protected Room currentRoom;
     protected int health;
     protected int power;
@@ -22,6 +23,16 @@ public class Enemy {
     }
     public String getDescription() {
         return description;
+    }
+
+    public void printScan() {
+        System.out.println(scan);
+    }
+    public void setScan(String pScan) {
+        scan = pScan;
+    }
+    public String getScan() {
+        return scan;
     }
 
     public Room getCurrentRoom() {

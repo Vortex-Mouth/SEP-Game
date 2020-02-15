@@ -105,6 +105,7 @@ public class Game {
         //Creating enemy information
         mole.setHealth(30);
         mole.setDescription("There is a weak, but grumpy mole in the room that doesn't like you very much.");
+        mole.setScan("Giant unnecessarily hostile mole. Uses claws and a powerful drill for attacking. Odds are against you unless you have a more powerful weapon than your fists.");
         enemyList.put(mole.getName(),mole);
         roomList.get("Room3").addEnemy(mole.getName(),mole);
         mole.setCurrentRoom(roomList.get("Room3"));
@@ -114,8 +115,8 @@ public class Game {
         enemyList.put(carson.getName(),carson);
 
         //Creating player information
-        player1.name = "Carson";
-        player1.setCurrentRoom(roomList.get("Room4"));
+        player1.name = "Guy";
+        player1.setCurrentRoom(roomList.get("Room3"));
         player1.setHealth(30);
 
         //Puzzle status
@@ -173,6 +174,15 @@ public class Game {
             else if(command.equals("drop")) {
                 player1.drop(modifier);                
             } 
+            else if(command.equals("use")) {
+                if(player1.itsItems.get(modifier) != null) {
+                    if(modifier.equals("drill") && player1.getCurrentRoom() == roomList.get("Room4")) {
+                        dirtInWest = false;
+                        dirtInSouth = false;
+                        System.out.print("The drill utterly decimates the dirt blocking the west and south exits! ");
+                    }
+                }
+            }
 
             else if(command.equals("carson")) {
                 player1.getCurrentRoom().addEnemy(carson.getName(),carson);
@@ -190,7 +200,7 @@ public class Game {
                     //Creating player actions
                 while(fightCommand.equals("help") || fightCommand.equals("status")) {
                     if(fightCommand.equals("help")) {
-                        System.out.println("punch, status, (You can also attack by typing in an item, like missile)");
+                        System.out.println("punch, status, scan, (You can also attack by typing in one of your items, like missile)");
                         System.out.println("What do you do?");
                         System.out.println(">> ");
                         fightCommand = s.nextLine();
@@ -251,11 +261,26 @@ public class Game {
                         String fightCommand = s.nextLine();
 
                         //Creating player actions
-                        if(fightCommand.equals("help")) {
-                            System.out.println("punch, check, (You can also attack by typing in an item, like missile)");
-                            System.out.println("What do you do?");
-                            System.out.println(">> ");
-                            fightCommand = s.nextLine();
+                        while(fightCommand.equals("help") || fightCommand.equals("status") || fightCommand.equals("scan")) {
+                            if(fightCommand.equals("help")) {
+                                System.out.println("punch, check, scan, (You can also attack by typing in an item, like missile)");
+                                System.out.println("What do you do?");
+                                System.out.println(">> ");
+                                fightCommand = s.nextLine();
+                            } else if(fightCommand.equals("status")) {
+                                System.out.println("Your HP: " + player1.getHealth());
+                                System.out.println("Enemy HP: " + player1.currentRoom.getEnemy(modifier).health);
+                                System.out.println("What do you do?");
+                                System.out.println(">> ");
+                                fightCommand = s.nextLine();
+                            } else if(fightCommand.equals("scan")) {
+                                System.out.println("You scan the enemy!");
+                                System.out.println("Scan: ");
+                                player1.currentRoom.getEnemy(modifier).printScan();
+                                System.out.println("What do you do?");
+                                System.out.println(">> ");
+                                fightCommand = s.nextLine();
+                            }
                         }
                         if(fightCommand.equals("punch")) {
                             player1.setPower(r.nextInt(6));
@@ -296,7 +321,7 @@ public class Game {
                         //End of mole fight
                         if(defeatedEnemy == "mole") {
                             roomList.get("Room3").addItem(drill.getName(),drill);
-                            player1.setHealth(100);
+                            player1.setHealth(player1.health + 70);
                             System.out.println("For some reason, your health increased to 100! Your chest hair increased by 5! Your nail polish increased by 2");
                         } 
                         player1.currentRoom.removeEnemy(player1.currentRoom.getEnemy(modifier).getName());

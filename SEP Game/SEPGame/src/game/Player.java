@@ -71,7 +71,6 @@ public class Player {
                 System.out.println("You smash your face against a wall.");
             }
         }
-
         System.out.println("Room = " + currentRoom.name);
    }
 

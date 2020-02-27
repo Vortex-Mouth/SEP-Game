@@ -139,7 +139,7 @@ public class Game {
 
         //Creating player information
         player1.name = "Guy";
-        player1.setCurrentRoom(roomList.get("Room5"));
+        player1.setCurrentRoom(roomList.get("Room3"));
         player1.setHealth(100);
         int maxHealth = player1.getHealth();
 
@@ -192,7 +192,7 @@ public class Game {
                     //Creating player actions
                     while(fightCommand.equals("help") || fightCommand.equals("status") || fightCommand.equals("scan")) {
                         if(fightCommand.equals("help")) {
-                            System.out.println("punch, check, scan, (You can also attack by typing in an item, like missile)");
+                            System.out.println("punch (enemy), status, scan (enemy), (You can also attack by typing in an item, like missile and then the enemy's name afterwards)");
                             System.out.println("What do you do?");
                             System.out.println(">> ");
                             fightInput = s.nextLine();
@@ -203,7 +203,14 @@ public class Game {
                              }
                         } else if(fightCommand.equals("status")) {
                             System.out.println("Your HP: " + player1.getHealth());
-                            System.out.println("Enemy HP: " + player1.currentRoom.getEnemy(enemy).health);
+                            if(player1.currentRoom.getEnemy(enemy).getHealth() > 0) {
+                                System.out.println(player1.currentRoom.getEnemy(enemy).getName() + " HP: " + player1.currentRoom.getEnemy(enemy).health);
+                            }
+                            if(player1.currentRoom.getEnemy(enemy2) != null) {
+                                if(player1.currentRoom.getEnemy(enemy2).getHealth() > 0) {
+                                    System.out.println(player1.currentRoom.getEnemy(enemy2).getName() + " HP: " + player1.currentRoom.getEnemy(enemy2).health);
+                                }
+                            }
                             System.out.println("What do you do?");
                             System.out.println(">> ");
                             fightInput = s.nextLine();
@@ -215,7 +222,7 @@ public class Game {
                         } else if(fightCommand.equals("scan")) {
                             System.out.println("You scan the enemy!");
                             System.out.println("Scan: ");
-                            player1.currentRoom.getEnemy(enemy).printScan();
+                            player1.currentRoom.getEnemy(fightModifier).printScan();
                             System.out.println("What do you do?");
                             System.out.println(">> ");
                             fightInput = s.nextLine();
@@ -223,12 +230,13 @@ public class Game {
                             fightCommand = words[0];
                             if (words.length > 1) {
                                 fightModifier = words[1];
-                             }
+                            }
                         }
                     }
 
                     //Player attacking options
                     String targetEnemy = fightModifier;
+
                     if(fightCommand.equals("punch")) {
                         if(powerPunch == false) {
                             player1.setPower(r.nextInt(6) + 1);
@@ -238,7 +246,7 @@ public class Game {
                         System.out.println("You punched the enemy for " + player1.getPower() + " damage!");
 
                     } else if(fightCommand.equals("missile")) {
-                        if(player1.currentRoom.getEnemy(enemy) != frank) {
+                        if(player1.currentRoom.getEnemy(targetEnemy) != frank) {
                             player1.setPower(r.nextInt(12) + 6);
                             System.out.println("You shot a missile at the enemy for " + player1.getPower() + " damage!");
                         } else {
@@ -248,7 +256,7 @@ public class Game {
                             frank.health += player1.getPower();
                         }
                     } else if(fightCommand.equals("drill")) {
-                        if(player1.currentRoom.getEnemy(enemy) != frank) {
+                        if(player1.currentRoom.getEnemy(targetEnemy) != frank) {
                             player1.setPower(r.nextInt(8) + 6);
                             System.out.println("You drilled into the enemy for " + player1.getPower() + " damage!");
                         } else {
@@ -643,4 +651,3 @@ public class Game {
             }*/
         }
     }
-}

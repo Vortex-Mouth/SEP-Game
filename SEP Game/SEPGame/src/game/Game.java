@@ -121,7 +121,7 @@ public class Game {
 
         moon.setHealth(85);
         moon.setDescription("There is a moon about twice your body size with a disapproving face.");
-        moon.setScan("This cold moon uses ice and meteor-based attacks. Its icy surface protects the soft breakable ground underneath. The ice is vulnerable to an explosive-based attack.");
+        moon.setScan("This cold moon uses ice and meteor-based attacks. Its icy surface protects against all damage against the soft & breakable ground underneath. The ice is vulnerable to an explosion-based attack.");
         enemyList.put(moon.getName(),moon);
         roomList.get("Room9").addEnemy(moon.getName(),moon);
         moon.setCurrentRoom(roomList.get("Room9"));
@@ -130,7 +130,7 @@ public class Game {
         sun.setDescription("There is a sun about twice your body size with an extremely angry face.");
         sun.setScan("This small star uses fire and heat-based atacks. It surprisingly doesn't have any resistances, but it also doesn't have any particular weaknesses.");
         enemyList.put(sun.getName(),sun);
-        roomList.get("Room9").addEnemy(sun.getName(),sun);
+        roomList.get("Room10").addEnemy(sun.getName(),sun);
         sun.setCurrentRoom(roomList.get("Room9"));
 
         carson.setHealth(240);
@@ -139,7 +139,7 @@ public class Game {
 
         //Creating player information
         player1.name = "Guy";
-        player1.setCurrentRoom(roomList.get("Room3"));
+        player1.setCurrentRoom(roomList.get("Room9"));
         player1.setHealth(100);
         int maxHealth = player1.getHealth();
 
@@ -148,6 +148,7 @@ public class Game {
         boolean dirtInWest = true;
         boolean powerPunch = false;
         boolean keyDoorOpen = false;
+        boolean iceShield = true;
 
         //Where game starts
         System.out.println("One day you come into existence.You don't know anything about who you are, or where you are(unless you've played this before). You do have some really cool looking mechanical arms though.(Type 'help' to see commands you can do.)");
@@ -158,9 +159,9 @@ public class Game {
 
             //Enemy fight begins
             if(player1.getCurrentRoom().getEnemy("mole") != null || player1.getCurrentRoom().getEnemy("frank") != null || player1.getCurrentRoom().getEnemy("moon") != null || player1.getCurrentRoom().getEnemy("carson") != null) {
-                String enemy = null;
-                String enemy2 = null;
-                String defeatedEnemy = null;
+                String enemy = " ";
+                String enemy2 = " ";
+                String defeatedEnemy = " ";
 
                 //Figuring out which enemy it is
                 if(player1.getCurrentRoom().getEnemy("mole") != null) {
@@ -184,9 +185,9 @@ public class Game {
                     String fightInput = s.nextLine();
                     String[] words = fightInput.split(" ");
                     String fightCommand = words[0];
-                    String fightModifier = null;
+                    String targetEnemy = null;
                     if (words.length > 1) {
-                       fightModifier = words[1];
+                       targetEnemy = words[1];
                     }
 
                     //Creating player actions
@@ -199,7 +200,7 @@ public class Game {
                             words = fightInput.split(" ");
                             fightCommand = words[0];
                             if (words.length > 1) {
-                                fightModifier = words[1];
+                                targetEnemy = words[1];
                              }
                         } else if(fightCommand.equals("status")) {
                             System.out.println("Your HP: " + player1.getHealth());
@@ -217,26 +218,24 @@ public class Game {
                             words = fightInput.split(" ");
                             fightCommand = words[0];
                             if (words.length > 1) {
-                                fightModifier = words[1];
+                                targetEnemy = words[1];
                              }
                         } else if(fightCommand.equals("scan")) {
                             System.out.println("You scan the enemy!");
                             System.out.println("Scan: ");
-                            player1.currentRoom.getEnemy(fightModifier).printScan();
+                            player1.currentRoom.getEnemy(targetEnemy).printScan();
                             System.out.println("What do you do?");
                             System.out.println(">> ");
                             fightInput = s.nextLine();
                             words = fightInput.split(" ");
                             fightCommand = words[0];
                             if (words.length > 1) {
-                                fightModifier = words[1];
+                                targetEnemy = words[1];
                             }
                         }
                     }
 
                     //Player attacking options
-                    String targetEnemy = fightModifier;
-
                     if(fightCommand.equals("punch")) {
                         if(powerPunch == false) {
                             player1.setPower(r.nextInt(6) + 1);
@@ -245,24 +244,45 @@ public class Game {
                         }
                         System.out.println("You punched the enemy for " + player1.getPower() + " damage!");
 
-                    } else if(fightCommand.equals("missile")) {
-                        if(player1.currentRoom.getEnemy(targetEnemy) != frank) {
-                            player1.setPower(r.nextInt(12) + 6);
-                            System.out.println("You shot a missile at the enemy for " + player1.getPower() + " damage!");
-                        } else {
+                    } 
+                    
+                    else if(fightCommand.equals("missile")) {
+                        if(player1.currentRoom.getEnemy(targetEnemy) == frank) {
                             player1.setPower(r.nextInt(12) + 6);
                             player1.health -= player1.getPower();
                             System.out.println("That's just foolish! The Frank Scholze Mech catches the missile and throws it at you for " + player1.getPower() + " damage!");
                             frank.health += player1.getPower();
-                        }
-                    } else if(fightCommand.equals("drill")) {
-                        if(player1.currentRoom.getEnemy(targetEnemy) != frank) {
-                            player1.setPower(r.nextInt(8) + 6);
-                            System.out.println("You drilled into the enemy for " + player1.getPower() + " damage!");
+                        } else if(player1.currentRoom.getEnemy(targetEnemy) == moon) {
+                            if(iceShield == true) {
+                                iceShield = false;
+                                System.out.println("You shot a missile at the enemy for " + player1.getPower() + " damage and melted its ice shield!");
+                            } else {
+                                player1.setPower(r.nextInt(12) + 6);
+                                System.out.println("You shot a missile at the enemy for " + player1.getPower() + " damage!");
+                            }
                         } else {
+                            player1.setPower(r.nextInt(12) + 6);
+                            System.out.println("You shot a missile at the enemy for " + player1.getPower() + " damage!");
+                        }
+                    } 
+                    
+                    else if(fightCommand.equals("drill")) {
+                        if(player1.currentRoom.getEnemy(targetEnemy) == frank) {
                             player1.setPower(r.nextInt(18) + 9);
                             System.out.println("You showed Frank how wrong he was by explaining your biggest 'point' and dealed " + player1.getPower() + " damage!");
+                        } else if(player1.currentRoom.getEnemy(targetEnemy) == moon) {
+                            player1.setPower(r.nextInt(36) + 18);
+                            System.out.println("It's super effective! You drilled into the enemy for " + player1.getPower() + " damage!");
                         }
+                        else {
+                            player1.setPower(r.nextInt(8) + 6);
+                            System.out.println("You drilled into the enemy for " + player1.getPower() + " damage!");
+                        }
+                    }
+
+                    if(iceShield == true && player1.currentRoom.getEnemy(targetEnemy) == moon) {
+                        player1.setPower(0);
+                        System.out.println(".....Unfortunately, the enemy blocked all of it somehow.");
                     }
                     player1.currentRoom.getEnemy(targetEnemy).health -= player1.getPower();
                     player1.setPower(0);
@@ -291,6 +311,19 @@ public class Game {
                             } else {
                                 frank.setPower(r.nextInt(9) + 6);
                                 System.out.println("The Frank Scholze Mech uses his free speech to shout profanities and deals " + frank.getPower() + " damage!");
+                            }
+                        }
+
+                        //Moon's turn
+                        else if(player1.currentRoom.getEnemy(enemy) == moon) {
+                            int attack = r.nextInt(8);
+                            if(attack > 4) {
+                                moon.setPower(r.nextInt(8) + 6);
+                                moon.health += 20;
+                                System.out.println("The moon causes an ice shower that heals itself for 10 HP and deals " + moon.getPower() + " damage!");
+                            } else {
+                                moon.setPower(r.nextInt(13) + 8);
+                                System.out.println("The moon spits out meteors and deals " + moon.getPower() + " damage!");
                             }
                         }
 

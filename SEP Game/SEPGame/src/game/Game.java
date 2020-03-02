@@ -42,11 +42,11 @@ public class Game {
 
         roomList.get("Room5").eastRoom = roomList.get("Room4");
         roomList.get("Room5").southRoom = roomList.get("Room7");
-        roomList.get("Room5").setDescription("You are in a very dark and foreboding mechanical room.");
+        roomList.get("Room5").setDescription("You are in a very foreboding mechanical room.");
 
         roomList.get("Room6").westRoom = roomList.get("Room4");
         roomList.get("Room6").southRoom = roomList.get("Room8");
-        roomList.get("Room6").setDescription("This appears to be a storage room for some helpful items.");
+        roomList.get("Room6").setDescription("This appears to be a storage room for something. Although you can't really tell because it's so dark.");
 
         roomList.get("Room7").westRoom = roomList.get("Room5");
         roomList.get("Room7").southRoom = roomList.get("Room9");
@@ -76,17 +76,26 @@ public class Game {
         Item drill = new Item();
         drill.setName("drill");
 
+        Item fire = new Item();
+        fire.setName("fire");
+
+        Item ice = new Item();
+        ice.setName("ice");
+
         //Creating item information
         itemList.put(missileLauncher.getName(),missileLauncher);
         roomList.get("Room2").addItem(missileLauncher.getName(),missileLauncher);
         missileLauncher.setDescription("There is a missile launcher laying conveniently on the pedestal that you can use to shoot at things.");
 
         itemList.put(key.getName(),key);
-        roomList.get("Room5").addItem(key.getName(),key);
         key.setDescription("There is a small key that can be used to unlock doors.");
 
         itemList.put(drill.getName(),drill);
         drill.setDescription("The mole dropped his drill. It's a sharp and powerful tool.");
+
+        itemList.put(fire.getName(),fire);
+
+        itemList.put(ice.getName(),ice);
 
         //Creating enemies
         Enemy mole = new Enemy();
@@ -121,7 +130,7 @@ public class Game {
 
         moon.setHealth(85);
         moon.setDescription("There is a moon about twice your body size with a disapproving face.");
-        moon.setScan("This cold moon uses ice and meteor-based attacks. Its icy surface protects against all damage against the soft & breakable ground underneath. The ice is vulnerable to an explosion-based attack.");
+        moon.setScan("This cold moon uses ice and meteor-based attacks. Its icy surface protects against all damage against the soft & breakable ground underneath. The ice can be broken by a certain weapon.");
         enemyList.put(moon.getName(),moon);
         roomList.get("Room9").addEnemy(moon.getName(),moon);
         moon.setCurrentRoom(roomList.get("Room9"));
@@ -130,7 +139,7 @@ public class Game {
         sun.setDescription("There is a sun about twice your body size with an extremely angry face.");
         sun.setScan("This small star uses fire and heat-based atacks. It surprisingly doesn't have any resistances, but it also doesn't have any particular weaknesses.");
         enemyList.put(sun.getName(),sun);
-        roomList.get("Room10").addEnemy(sun.getName(),sun);
+        roomList.get("Room9").addEnemy(sun.getName(),sun);
         sun.setCurrentRoom(roomList.get("Room9"));
 
         carson.setHealth(240);
@@ -140,15 +149,16 @@ public class Game {
         //Creating player information
         player1.name = "Guy";
         player1.setCurrentRoom(roomList.get("Room9"));
-        player1.setHealth(100);
+        player1.setHealth(170);
         int maxHealth = player1.getHealth();
 
         //Puzzle status
         boolean dirtInSouth = true;
         boolean dirtInWest = true;
-        boolean powerPunch = false;
+        boolean powerPunch = true;
         boolean keyDoorOpen = false;
         boolean iceShield = true;
+        boolean fireAndIce = false;
 
         //Where game starts
         System.out.println("One day you come into existence.You don't know anything about who you are, or where you are(unless you've played this before). You do have some really cool looking mechanical arms though.(Type 'help' to see commands you can do.)");
@@ -177,6 +187,9 @@ public class Game {
 
                 //When fight begins
                 System.out.println("You are attacked by the " + enemy + "!");
+                if(enemy2 != null) {
+                    System.out.println("You are attacked by the " + enemy2 + "!");
+                }
                 while(player1.currentRoom.getEnemy(enemy) != null && player1.getHealth() > 0 || player1.currentRoom.getEnemy(enemy2) != null && player1.getHealth() > 0 ) {
 
                     //Player's turn
@@ -204,8 +217,10 @@ public class Game {
                              }
                         } else if(fightCommand.equals("status")) {
                             System.out.println("Your HP: " + player1.getHealth());
-                            if(player1.currentRoom.getEnemy(enemy).getHealth() > 0) {
-                                System.out.println(player1.currentRoom.getEnemy(enemy).getName() + " HP: " + player1.currentRoom.getEnemy(enemy).health);
+                            if(player1.currentRoom.getEnemy(enemy) != null) {
+                                if(player1.currentRoom.getEnemy(enemy).getHealth() > 0) {
+                                    System.out.println(player1.currentRoom.getEnemy(enemy).getName() + " HP: " + player1.currentRoom.getEnemy(enemy).health);
+                                }
                             }
                             if(player1.currentRoom.getEnemy(enemy2) != null) {
                                 if(player1.currentRoom.getEnemy(enemy2).getHealth() > 0) {
@@ -240,7 +255,7 @@ public class Game {
                         if(powerPunch == false) {
                             player1.setPower(r.nextInt(6) + 1);
                         } else {
-                            player1.setPower(r.nextInt(18) + 10);
+                            player1.setPower(r.nextInt(18) + 20);
                         }
                         System.out.println("You punched the enemy for " + player1.getPower() + " damage!");
 
@@ -271,7 +286,7 @@ public class Game {
                             player1.setPower(r.nextInt(18) + 9);
                             System.out.println("You showed Frank how wrong he was by explaining your biggest 'point' and dealed " + player1.getPower() + " damage!");
                         } else if(player1.currentRoom.getEnemy(targetEnemy) == moon) {
-                            player1.setPower(r.nextInt(36) + 18);
+                            player1.setPower(r.nextInt(36) + 30);
                             System.out.println("It's super effective! You drilled into the enemy for " + player1.getPower() + " damage!");
                         }
                         else {
@@ -288,72 +303,115 @@ public class Game {
                     player1.setPower(0);
 
                     //Enemy's turn
-                    if(player1.currentRoom.getEnemy(enemy).health > 0) {
+                    if(player1.currentRoom.getEnemy(enemy) != null) {
+                        if(player1.currentRoom.getEnemy(enemy).health > 0) {
 
-                        //mole's turn
-                        if(player1.currentRoom.getEnemy(enemy) == mole) {
-                            int attack = r.nextInt(4);
-                            if(attack == 3) {
-                                mole.setPower(r.nextInt(10) + 5);
-                                System.out.println("The mole attacks you with a giant drill and deals " + mole.getPower() + " damage!");
-                            } else {
-                                mole.setPower(r.nextInt(6) + 1);
-                                System.out.println("The mole swipes its claws and deals " + mole.getPower() + " damage!");
+                            //mole's turn
+                            if(player1.currentRoom.getEnemy(enemy) == mole) {
+                                int attack = r.nextInt(4);
+                                if(attack == 3) {
+                                    mole.setPower(r.nextInt(10) + 5);
+                                    System.out.println("The mole attacks you with a giant drill and deals " + mole.getPower() + " damage!");
+                                } else {
+                                    mole.setPower(r.nextInt(6) + 1);
+                                    System.out.println("The mole swipes its claws and deals " + mole.getPower() + " damage!");
+                                }
+                            } 
+    
+                            //Frank Scholze Mech's turn
+                            else if(player1.currentRoom.getEnemy(enemy) == frank) {
+                                int attack = r.nextInt(8);
+                                if(attack > 4) {
+                                    frank.setPower(r.nextInt(18) + 8);
+                                    System.out.println("The Frank Scholze Mech proudly fires you with his dual wielding AR-15's and deals " + frank.getPower() + " damage!");
+                                } else {
+                                    frank.setPower(r.nextInt(9) + 6);
+                                    System.out.println("The Frank Scholze Mech uses his free speech to shout profanities and deals " + frank.getPower() + " damage!");
+                                }
                             }
-                        } 
-
-                        //Frank Scholze Mech's turn
-                        else if(player1.currentRoom.getEnemy(enemy) == frank) {
-                            int attack = r.nextInt(8);
-                            if(attack > 4) {
-                                frank.setPower(r.nextInt(18) + 8);
-                                System.out.println("The Frank Scholze Mech proudly fires you with his dual wielding AR-15's and deals " + frank.getPower() + " damage!");
-                            } else {
-                                frank.setPower(r.nextInt(9) + 6);
-                                System.out.println("The Frank Scholze Mech uses his free speech to shout profanities and deals " + frank.getPower() + " damage!");
+    
+                            //Moon's turn
+                            else if(player1.currentRoom.getEnemy(enemy) == moon) {
+                                int attack = r.nextInt(8);
+                                if(attack > 4) {
+                                    moon.setPower(r.nextInt(8) + 6);
+                                    moon.health += 20;
+                                    System.out.println("The moon causes an ice shower that heals itself for 10 HP and deals " + moon.getPower() + " damage!");
+                                } else {
+                                    moon.setPower(r.nextInt(13) + 8);
+                                    System.out.println("The moon spits out meteors and deals " + moon.getPower() + " damage!");
+                                }
+                            }
+    
+                            player1.health -= player1.currentRoom.getEnemy(enemy).getPower();
+                        } else {
+                            defeatedEnemy = player1.currentRoom.getEnemy(enemy).getName();
+                            player1.currentRoom.removeEnemy(player1.currentRoom.getEnemy(enemy).getName());
+                            if(defeatedEnemy == "moon") {
+                                System.out.println("You defeated the moon!");
                             }
                         }
+                    }
 
-                        //Moon's turn
-                        else if(player1.currentRoom.getEnemy(enemy) == moon) {
-                            int attack = r.nextInt(8);
-                            if(attack > 4) {
-                                moon.setPower(r.nextInt(8) + 6);
-                                moon.health += 20;
-                                System.out.println("The moon causes an ice shower that heals itself for 10 HP and deals " + moon.getPower() + " damage!");
-                            } else {
-                                moon.setPower(r.nextInt(13) + 8);
-                                System.out.println("The moon spits out meteors and deals " + moon.getPower() + " damage!");
+                    //Second Enemy's turn
+                    if(player1.currentRoom.getEnemy(enemy2) != null) {
+                        if(player1.currentRoom.getEnemy(enemy2).health > 0) {
+
+                            //Sun's turn
+                            if(player1.currentRoom.getEnemy(enemy2) == sun) {
+                                int attack = r.nextInt(8);
+                                if(attack > 4) {
+                                    sun.setPower(r.nextInt(18) + 8);
+                                    System.out.println("The sun unleashes a solar flare and deals " + sun.getPower() + " damage!");
+                                } else {
+                                    sun.setPower(r.nextInt(13) + 8);
+                                    System.out.println("The sun launches a wave of fireballs and deals " + sun.getPower() + " damage!");
+                                }
+                            }
+    
+                            player1.health -= player1.currentRoom.getEnemy(enemy2).getPower();
+                        } else {
+                            defeatedEnemy = player1.currentRoom.getEnemy(enemy2).getName();
+                            player1.currentRoom.removeEnemy(player1.currentRoom.getEnemy(enemy2).getName());
+                            if(defeatedEnemy == "sun") {
+                                System.out.println("You defeated the sun!");
                             }
                         }
-
-                        player1.health -= player1.currentRoom.getEnemy(enemy).getPower();
-                    } else {
-                        defeatedEnemy = player1.currentRoom.getEnemy(enemy).getName();
-                        player1.currentRoom.removeEnemy(player1.currentRoom.getEnemy(enemy).getName());
                     }
                 }
+
                 //Fight ends
                 if(player1.health <= 0) {
                     System.out.println("Your health has dropped to 0! YOU LOSE! GOOD DAY HUMAN PERSON!");
                     s.close();
                     System.exit(0);
                 } else {
-                    System.out.println("You defeated the enemy!");
 
                     //End of mole fight
                     if(defeatedEnemy == "mole") {
+                        System.out.println("You defeated the mole!");
                         roomList.get("Room3").addItem(drill.getName(),drill);
                         System.out.println("For some reason, your health increased by 70! Your chest hair increased by 5! Your nail polish increased by 2");
                     } 
 
                     //End of Frank fight
                     else if(defeatedEnemy == "frank") {
-                        System.out.println("Your health increased by 70! Your election votes raised by 2,000! Your political correctness increased by 4!");
+                        System.out.println("You defeated the Frank Scholze Mech!");
+                        System.out.println("Your health increased by 70! Your electoral votes increased by 47! Your political correctness increased by 4!");
                         roomList.get("Room5").addItem(key.getName(),key);
                         powerPunch = true;
                         System.out.println("You use the remains of the Frank Scholze Mech to substantially increase the power of your punch attack!");
                     }
+
+                    //End of Sun & Moon fight
+                    else if(defeatedEnemy == "moon" || defeatedEnemy == "sun") {
+                        System.out.println("Your health increased by 70! Your polarity increased by 8!(whatever that means) Your moon dust irritation increased by 20!");
+                        System.out.println("You somehow absorb the remains of the sun and moon and gain access to fire and ice powers!(treat them as if they were items)");
+                        fireAndIce = true;
+                        player1.addItem("fire", fire);
+                        player1.addItem("ice", ice);
+                    }
+
                     player1.setHealth(maxHealth + 70);
                     maxHealth = player1.getHealth();
                 }
@@ -416,8 +474,10 @@ public class Game {
                     } else if(modifier.equals("key") && player1.getCurrentRoom() == roomList.get("Room4")) {
                         keyDoorOpen = true;
                         System.out.print("The key opens the door while a nice jingle plays in the background! ");
-                    } 
-                }
+                    } else if(modifier.equals("fire") && player1.getCurrentRoom() == roomList.get("Room8")) {
+                        System.out.print("The room lights up, which reveals a computer screen that says 'Enemy carson = new Enemy();'");
+                    }
+                } 
             }
             
             //Initiates Final Boss

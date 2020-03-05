@@ -152,14 +152,17 @@ public class Game {
         player1.setHealth(240);
         int maxHealth = player1.getHealth();
 
-        //Puzzle status
+        //Puzzle/item/enemy status
         boolean dirtInSouth = true;
         boolean dirtInWest = true;
-        boolean powerPunch = true;
         boolean keyDoorOpen = false;
-        boolean iceShield = true;
         boolean fireWall = true;
+
+        boolean powerPunch = true;
         boolean healingItemGot = true;
+
+        boolean iceShield = true;
+        String carsonMode = "normal";
 
         player1.addItem("fire", fire);
         player1.addItem("ice", ice);
@@ -258,10 +261,14 @@ public class Game {
                         if(powerPunch == false) {
                             player1.setPower(r.nextInt(6) + 1);
                         } else {
-                            player1.setPower(r.nextInt(18) + 20);
+                            if(player1.currentRoom.getEnemy(targetEnemy) == carson && carsonMode == "normal") {
+                                player1.setPower(r.nextInt(36) + 30);
+                                System.out.println("It's effective!");
+                            } else {
+                                player1.setPower(r.nextInt(18) + 20);
+                            }
                         }
                         System.out.println("You punched the enemy for " + player1.getPower() + " damage!");
-
                     } 
                     
                     else if(fightCommand.equals("missile")) {
@@ -278,7 +285,11 @@ public class Game {
                                 player1.setPower(r.nextInt(12) + 6);
                                 System.out.println("You shot a missile at the enemy for " + player1.getPower() + " damage!");
                             }
-                        } else {
+                        } else if(player1.currentRoom.getEnemy(targetEnemy) == carson && carsonMode == "glass") {
+                            player1.setPower(r.nextInt(36) + 30);
+                            System.out.println("It's effective! You shot a missile at the enemy for " + player1.getPower() + " damage!");
+                        }
+                          else {
                             player1.setPower(r.nextInt(12) + 6);
                             System.out.println("You shot a missile at the enemy for " + player1.getPower() + " damage!");
                         }
@@ -291,12 +302,35 @@ public class Game {
                         } else if(player1.currentRoom.getEnemy(targetEnemy) == moon) {
                             player1.setPower(r.nextInt(36) + 30);
                             System.out.println("It's super effective! You drilled into the enemy for " + player1.getPower() + " damage!");
+                        } else if(player1.currentRoom.getEnemy(targetEnemy) == carson && carsonMode == "ground") {
+                            player1.setPower(r.nextInt(36) + 30);
+                            System.out.println("It's effective! You drilled into the enemy for " + player1.getPower() + " damage!");
                         }
                         else {
                             player1.setPower(r.nextInt(8) + 6);
                             System.out.println("You drilled into the enemy for " + player1.getPower() + " damage!");
                         }
-                    } 
+                    }
+                    
+                    else if(fightCommand.equals("fire")) {
+                        if(player1.currentRoom.getEnemy(targetEnemy) == carson && carsonMode == "ice") {
+                            player1.setPower(r.nextInt(36) + 30);
+                            System.out.println("It was effective!");
+                        } else {
+                            player1.setPower(r.nextInt(16) + 15);
+                        }
+                        System.out.println("You shot a blast of fire at the enemy for " + player1.getPower() + " damage!");
+                    }
+
+                    else if(fightCommand.equals("ice")) {
+                        if(player1.currentRoom.getEnemy(targetEnemy) == carson && carsonMode == "fire") {
+                            player1.setPower(r.nextInt(36) + 30);
+                            System.out.println("It's effective!");
+                        } else {
+                            player1.setPower(r.nextInt(16) + 15);
+                        }
+                        System.out.println("You shot a blast of ice at the enemy for " + player1.getPower() + " damage!");
+                    }
                     
                     //Use healing item
                     if(fightCommand.equals("heal") && healingItemGot == true) {
@@ -359,14 +393,32 @@ public class Game {
 
                             //Carson's turn
                             else if(player1.currentRoom.getEnemy(enemy) == carson) {
-                                int attack = r.nextInt(10); 
-                                if(attack == 7) {
-                                    player1.setHealth(1);
-                                    System.out.println("You can see me type 'player.setHealth(1)'");
+                                int attack = r.nextInt(16); 
+                                if(attack == 15) {
+                                    player1.setHealth(player1.getHealth() - 100);
+                                    System.out.println("You can see me type 'player1.setHealth(player1.getHealth() - 100)'");
+                                    carsonMode = "normal";
                                     carson.setPower(0);
+                                } else if(attack < 15 && attack >= 12) {
+                                    carson.setPower(r.nextInt(23) + 18);
+                                    System.out.println("I type on a computer and you feel like you have less health!");
+                                    carsonMode = "fire";
+                                } else if(attack < 12 && attack >= 9) {
+                                    carson.setPower(r.nextInt(23) + 18);
+                                    System.out.println("I type on a computer and you feel like you have less health!");
+                                    carsonMode = "ice";
+                                } else if(attack < 9 && attack >= 6) {
+                                    carson.setPower(r.nextInt(21) + 16);
+                                    System.out.println("I type on a computer and you feel like you have less health!");
+                                    carsonMode = "glass";
+                                } else if(attack < 6 && attack >= 3) {
+                                    carson.setPower(r.nextInt(21) + 16);
+                                    System.out.println("I type on a computer and you feel like you have less health!");
+                                    carsonMode = "ground";
                                 } else {
                                     carson.setPower(r.nextInt(25) + 20);
                                     System.out.println("I type on a computer and you feel like you have less health!");
+                                    carsonMode = "normal";
                                 }
                             }
     
@@ -533,9 +585,7 @@ public class Game {
             else if(command.equals("carson")) {
                 player1.getCurrentRoom().addEnemy(carson.getName(),carson);
             }
-            }
-
-            
+            } 
         }
     }
 }

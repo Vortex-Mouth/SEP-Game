@@ -119,31 +119,28 @@ public class Game {
         mole.setScan("Giant unnecessarily hostile mole. Uses claws and a powerful drill for attacking. Odds are against you unless you have a more powerful weapon than your fists.");
         enemyList.put(mole.getName(),mole);
         roomList.get("Room3").addEnemy(mole.getName(),mole);
-        mole.setCurrentRoom(roomList.get("Room3"));
 
         frank.setHealth(100);
         frank.setDescription("There is a strange robot saying, 'I MUST ELMINATE THE 16TH & 17TH AMENDMENTS!'");
         frank.setScan("Robot resembling a teenage boy with glasses. Attacks with the 1st & 2nd amendments and protects himself with the free market economy. The strongest weapon against him is one that will make it get the point the fastest.");
         enemyList.put(frank.getName(),frank);
         roomList.get("Room5").addEnemy(frank.getName(),frank);
-        frank.setCurrentRoom(roomList.get("Room5"));
 
         moon.setHealth(85);
         moon.setDescription("There is a moon about twice your body size with a disapproving face.");
         moon.setScan("This cold moon uses ice and meteor-based attacks. Its icy surface protects against all damage against the soft & breakable ground underneath. The ice can be broken by a certain weapon.");
         enemyList.put(moon.getName(),moon);
         roomList.get("Room9").addEnemy(moon.getName(),moon);
-        moon.setCurrentRoom(roomList.get("Room9"));
 
         sun.setHealth(85);
         sun.setDescription("There is a sun about twice your body size with an extremely angry face.");
         sun.setScan("This small star uses fire and heat-based atacks. It surprisingly doesn't have any resistances, but it also doesn't have any particular weaknesses.");
         enemyList.put(sun.getName(),sun);
         roomList.get("Room9").addEnemy(sun.getName(),sun);
-        sun.setCurrentRoom(roomList.get("Room9"));
 
-        carson.setHealth(240);
+        carson.setHealth(300);
         carson.setDescription("So you know who I am. I am the creator of everything you have seen. The purpose of all of it is to create a project that challenges and builds my skills. However, I need this game to serve some sort of purpose to get a good grade. That purpose is defeating me. Can you grant me an A+ performance?");
+        carson.setScan("My weaknesses change all the time. Deal with it.");
         enemyList.put(carson.getName(),carson);
 
         //Creating player information
@@ -300,7 +297,7 @@ public class Game {
                             player1.setPower(r.nextInt(18) + 9);
                             System.out.println("You showed Frank how wrong he was by explaining your biggest 'point' and dealed " + player1.getPower() + " damage!");
                         } else if(player1.currentRoom.getEnemy(targetEnemy) == moon) {
-                            player1.setPower(r.nextInt(36) + 30);
+                            player1.setPower(r.nextInt(36) + 60);
                             System.out.println("It's super effective! You drilled into the enemy for " + player1.getPower() + " damage!");
                         } else if(player1.currentRoom.getEnemy(targetEnemy) == carson && carsonMode == "ground") {
                             player1.setPower(r.nextInt(36) + 30);
@@ -334,8 +331,11 @@ public class Game {
                     
                     //Use healing item
                     if(fightCommand.equals("heal") && healingItemGot == true) {
-                        System.out.println("You used the healing capsule to restore yourself to full health!");
-                        player1.setHealth(maxHealth);
+                        System.out.println("You used the healing capsule to restore 100 HP!");
+                        player1.setHealth(player1.getHealth() + 100);
+                        if(player1.getHealth() > 240) {
+                            player1.setHealth(240);
+                        }
                         healingItemGot = false;
                         targetEnemy = enemy;
                     } 
@@ -400,25 +400,26 @@ public class Game {
                                     carsonMode = "normal";
                                     carson.setPower(0);
                                 } else if(attack < 15 && attack >= 12) {
-                                    carson.setPower(r.nextInt(23) + 18);
-                                    System.out.println("I type on a computer and you feel like you have less health!");
+                                    carson.setPower(r.nextInt(26) + 25);
+                                    System.out.println("I summon a California wildfire to make you lit!");
                                     carsonMode = "fire";
                                 } else if(attack < 12 && attack >= 9) {
-                                    carson.setPower(r.nextInt(23) + 18);
-                                    System.out.println("I type on a computer and you feel like you have less health!");
+                                    carson.setPower(r.nextInt(26) + 15);
+                                    System.out.println("I summon a mid-April blizzard to give you the cold shoulder!");
                                     carsonMode = "ice";
                                 } else if(attack < 9 && attack >= 6) {
-                                    carson.setPower(r.nextInt(21) + 16);
-                                    System.out.println("I type on a computer and you feel like you have less health!");
+                                    carson.setPower(r.nextInt(26) + 25);
+                                    System.out.println("I create and throw mirror shards at you to make you reflect on your decisions!");
                                     carsonMode = "glass";
                                 } else if(attack < 6 && attack >= 3) {
-                                    carson.setPower(r.nextInt(21) + 16);
-                                    System.out.println("I type on a computer and you feel like you have less health!");
+                                    carson.setPower(r.nextInt(26) + 25);
+                                    System.out.println("I pick up the ground to make you eat dirt!");
                                     carsonMode = "ground";
                                 } else {
-                                    carson.setPower(r.nextInt(25) + 20);
-                                    System.out.println("I type on a computer and you feel like you have less health!");
+                                    player1.setHealth(player1.getHealth() - (r.nextInt(30) + 36));
+                                    System.out.println("I type on a computer and you mysteriously feel weaker!");
                                     carsonMode = "normal";
+                                    carson.setPower(0);
                                 }
                             }
     

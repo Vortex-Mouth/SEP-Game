@@ -45,7 +45,6 @@ public class Game {
         roomList.get("Room5").setDescription("You are in a very foreboding mechanical room.");
 
         roomList.get("Room6").westRoom = roomList.get("Room4");
-        roomList.get("Room6").southRoom = roomList.get("Room8");
         roomList.get("Room6").setDescription("You are in a very dark room. It needs to be lit in order to do anything in here.");
 
         roomList.get("Room7").westRoom = roomList.get("Room5");
@@ -55,7 +54,6 @@ public class Game {
         roomList.get("Room7").setDescription("You're in.....space? To the south are celestial objects,to the east is a manmade object,to the north is a planet with the factory from before.");
 
         roomList.get("Room8").westRoom = roomList.get("Room7");
-        roomList.get("Room8").northRoom = roomList.get("Room6");
         roomList.get("Room8").southRoom = roomList.get("Room10");
         roomList.get("Room8").setDescription("You have arrived at a space station.");
 
@@ -85,13 +83,13 @@ public class Game {
         //Creating item information
         itemList.put(missileLauncher.getName(),missileLauncher);
         roomList.get("Room2").addItem(missileLauncher.getName(),missileLauncher);
-        missileLauncher.setDescription("There is a missile launcher laying conveniently on the pedestal that you can use to shoot at things.");
+        missileLauncher.setDescription("You picked up the missile launcher laying conveniently on the pedestal. You can use it to shoot at enemies and shatter certain things.(When using, just type 'missile')");
 
         itemList.put(key.getName(),key);
-        key.setDescription("There is a small key that can be used to unlock doors.");
+        key.setDescription("You pick up a small key Frank dropped. It can be used to unlock doors.");
 
         itemList.put(drill.getName(),drill);
-        drill.setDescription("The mole dropped his drill. It's a sharp and powerful tool.");
+        drill.setDescription("You pick up the mole's drill. It's a sharp tool useful in certain situations where other items are useless.");
 
         itemList.put(fire.getName(),fire);
 
@@ -140,13 +138,14 @@ public class Game {
 
         carson.setHealth(300);
         carson.setDescription("So you know who I am. I am the creator of everything you have seen. The purpose of all of it is to create a project that challenges and builds my skills. However, I need this game to serve some sort of purpose to get a good grade. That purpose is defeating me. Can you grant me an A+ performance?");
-        carson.setScan("My weaknesses change all the time. Deal with it.");
+        carson.setScan("Why would I tell you my own weaknesses? Figure it out casual!");
         enemyList.put(carson.getName(),carson);
 
         //Creating player information
         player1.name = "Guy";
-        player1.setCurrentRoom(roomList.get("Room10"));
-        player1.setHealth(240);
+        player1.setCurrentRoom(roomList.get("Room1"));
+        player1.setPrevRoom(roomList.get("Room1"));
+        player1.setHealth(30);
         int maxHealth = player1.getHealth();
 
         //Puzzle/item/enemy status
@@ -155,19 +154,24 @@ public class Game {
         boolean keyDoorOpen = false;
         boolean fireWall = true;
 
-        boolean powerPunch = true;
-        boolean healingItemGot = true;
+        boolean powerPunch = false;
+        boolean healingItemGot = false;
+        boolean missileGot = false;
 
         boolean iceShield = true;
         String carsonMode = "normal";
 
-        player1.addItem("fire", fire);
-        player1.addItem("ice", ice);
         //Where game starts
         System.out.println("One day you come into existence.You don't know anything about who you are, or where you are(unless you've played this before). You do have some really cool looking mechanical arms though.(Type 'help' to see commands you can do.)");
         while(true) {
-            player1.getCurrentRoom().printDescription();
-            player1.getCurrentRoom().printItems();
+            if(player1.getCurrentRoom().getEnemy("carson") == null) {
+                player1.getCurrentRoom().printDescription();
+            }
+            if(player1.getCurrentRoom() == roomList.get("Room2") && missileGot == false) {
+                missileLauncher.printDescription();
+                player1.addItem("missile", missileLauncher);
+                missileGot = true;
+            }
             player1.getCurrentRoom().printEnemies();
 
             //Enemy fight begins
@@ -209,7 +213,7 @@ public class Game {
                     //Creating player actions
                     while(fightCommand.equals("help") || fightCommand.equals("status") || fightCommand.equals("scan")) {
                         if(fightCommand.equals("help")) {
-                            System.out.println("punch (enemy), status, scan (enemy), (You can also attack by typing in an item, like missile and then the enemy's name afterwards)");
+                            System.out.println("punch (enemy), status, scan (enemy), (You can also attack by typing in one of your acquired items, like missile, and then the enemy's name afterwards)");
                             System.out.println("What do you do?");
                             System.out.println(">> ");
                             fightInput = s.nextLine();
@@ -261,14 +265,14 @@ public class Game {
                             if(player1.currentRoom.getEnemy(targetEnemy) == carson && carsonMode == "normal") {
                                 player1.setPower(r.nextInt(36) + 30);
                                 System.out.println("It's effective!");
-                            } else {
-                                player1.setPower(r.nextInt(18) + 20);
+                            } else if(player1.currentRoom.getEnemy(targetEnemy) == carson && carsonMode != "normal"){
+                                player1.setPower(r.nextInt(16) + 15);
                             }
                         }
                         System.out.println("You punched the enemy for " + player1.getPower() + " damage!");
                     } 
                     
-                    else if(fightCommand.equals("missile")) {
+                    else if(fightCommand.equals("missile") && player1.itsItems.get("missile") != null) {
                         if(player1.currentRoom.getEnemy(targetEnemy) == frank) {
                             player1.setPower(r.nextInt(12) + 6);
                             player1.health -= player1.getPower();
@@ -292,7 +296,7 @@ public class Game {
                         }
                     } 
                     
-                    else if(fightCommand.equals("drill")) {
+                    else if(fightCommand.equals("drill") && player1.itsItems.get("drill") != null) {
                         if(player1.currentRoom.getEnemy(targetEnemy) == frank) {
                             player1.setPower(r.nextInt(18) + 9);
                             System.out.println("You showed Frank how wrong he was by explaining your biggest 'point' and dealed " + player1.getPower() + " damage!");
@@ -309,7 +313,7 @@ public class Game {
                         }
                     }
                     
-                    else if(fightCommand.equals("fire")) {
+                    else if(fightCommand.equals("fire") && player1.itsItems.get("fire") != null) {
                         if(player1.currentRoom.getEnemy(targetEnemy) == carson && carsonMode == "ice") {
                             player1.setPower(r.nextInt(36) + 30);
                             System.out.println("It was effective!");
@@ -319,7 +323,7 @@ public class Game {
                         System.out.println("You shot a blast of fire at the enemy for " + player1.getPower() + " damage!");
                     }
 
-                    else if(fightCommand.equals("ice")) {
+                    else if(fightCommand.equals("ice") && player1.itsItems.get("ice") != null) {
                         if(player1.currentRoom.getEnemy(targetEnemy) == carson && carsonMode == "fire") {
                             player1.setPower(r.nextInt(36) + 30);
                             System.out.println("It's effective!");
@@ -346,8 +350,12 @@ public class Game {
                             System.out.println(".....Unfortunately, the enemy blocked all of it somehow.");
                         }
                     }
-
-                    player1.currentRoom.getEnemy(targetEnemy).health -= player1.getPower();
+                    
+                    if(player1.currentRoom.getEnemy(targetEnemy) != null) {
+                        player1.currentRoom.getEnemy(targetEnemy).health -= player1.getPower();
+                    } else if(player1.currentRoom.getEnemy(targetEnemy) == null && fightCommand != "heal") {
+                        System.out.println("Unfortunately, the damage didn't register because you forgot to include the target enemy's name. Here's a phrase to help you remember in the future. 'Without the name, you are lame.''");
+                    } 
                     player1.setPower(0);
 
                     //Enemy's turn
@@ -463,32 +471,58 @@ public class Game {
                 //Fight ends
                 if(player1.health <= 0) {
                     System.out.println("Your health has dropped to 0! YOU LOSE! GOOD DAY HUMAN PERSON!");
-                    s.close();
-                    System.exit(0);
+                    System.out.println("You come back to life in a previous room.");
+                    player1.setHealth(maxHealth);
+                    if(player1.getCurrentRoom() == roomList.get("Room9")) {
+                        if(player1.getCurrentRoom().getEnemy(enemy) == null) {
+                            roomList.get("Room9").addEnemy(moon.getName(), moon);
+                        } else if(player1.getCurrentRoom().getEnemy(enemy2) == null) {
+                            roomList.get("Room9").addEnemy(sun.getName(), sun);
+                        }
+                    }
+                    if(player1.currentRoom.getEnemy(enemy) == mole) {
+                        mole.setHealth(30);
+                    } else if(player1.currentRoom.getEnemy(enemy) == frank) {
+                        frank.setHealth(100);
+                    } else if(player1.currentRoom.getEnemy(enemy) == moon) {
+                        moon.setHealth(85);
+                        sun.setHealth(85);
+                        iceShield = true;
+                    } else if(player1.currentRoom.getEnemy(enemy) == carson) {
+                        carson.setHealth(300);
+                        healingItemGot = true;
+                        carsonMode = "normal";
+                        player1.getCurrentRoom().removeEnemy("carson");
+                    }
+                    player1.setCurrentRoom(player1.getPrevRoom());
                 } else {
 
                     //End of mole fight
                     if(defeatedEnemy == "mole") {
                         System.out.println("You defeated the mole!");
-                        roomList.get("Room3").addItem(drill.getName(),drill);
-                        System.out.println("For some reason, your health increased by 70! Your chest hair increased by 5! Your nail polish increased by 2");
+                        player1.addItem("drill", drill);
+                        //roomList.get("Room3").addItem(drill.getName(),drill);
+                        System.out.println("For some reason, your health increased by 70! Your chest hair increased by 5! Your nail polish increased by 2!");
+                        drill.printDescription();
                     } 
 
                     //End of Frank fight
                     else if(defeatedEnemy == "frank") {
                         System.out.println("You defeated the Frank Scholze Mech!");
                         System.out.println("Your health increased by 70! Your electoral votes increased by 47! Your political correctness increased by 4!");
-                        roomList.get("Room5").addItem(key.getName(),key);
+                        player1.addItem("key", key);
+                        //roomList.get("Room5").addItem(key.getName(),key);
                         powerPunch = true;
                         System.out.println("You use the remains of the Frank Scholze Mech to substantially increase the power of your punch attack!");
+                        key.printDescription();
                     }
 
                     //End of Sun & Moon fight
                     else if(defeatedEnemy == "moon" || defeatedEnemy == "sun") {
                         System.out.println("Your health increased by 70! Your polarity increased by 8!(whatever that means) Your moon dust irritation increased by 20!");
                         System.out.println("You somehow absorb the remains of the sun and moon and gain access to fire and ice powers!(treat them as if they were items)");
-                        //player1.addItem("fire", fire);
-                        //player1.addItem("ice", ice);
+                        player1.addItem("fire", fire);
+                        player1.addItem("ice", ice);
                     }
 
                     //End of Carson fight & the game
@@ -524,10 +558,13 @@ public class Game {
                 System.exit(0);
             } 
             else if(command.equals("help")) {
-                System.out.println("Command List: go (letter of cardinal direction), grab (item), drop (item), fight, quit");
+                System.out.println("Command List: go (letter of cardinal direction), use (name of item), quit. Type 'help' during a battle to get different commands.");
             } 
             else if(command.equals("go")) {
-                if(modifier.equals("n")) {
+                if(modifier == null) {
+                    System.out.println("Please type a direction.");
+                }
+                else if(modifier.equals("n")) {
                     player1.move("n");
                 }
                 else if(modifier.equals("s")) {
@@ -554,12 +591,12 @@ public class Game {
                     }
                 }
             } 
-            else if(command.equals("grab")) {
+            /*else if(command.equals("grab")) {
                 player1.grab(modifier);
             } 
             else if(command.equals("drop")) {
                 player1.drop(modifier);                
-            } 
+            }*/ 
             else if(command.equals("use")) {
                 if(player1.itsItems.get(modifier) != null) {
                     if(modifier.equals("drill") && player1.getCurrentRoom() == roomList.get("Room4")) {

@@ -6,6 +6,7 @@ import java.util.HashMap;
 public class Player {
    public String name;
    protected Room currentRoom;
+   protected Room prevRoom;
    protected int health;
    protected int power;
    protected HashMap<String,Item> itsItems = new HashMap<String,Item>();
@@ -48,24 +49,28 @@ public class Player {
    public void move(String direction) {
         if(direction == "n") {
             if(currentRoom.northRoom != null) {
+                prevRoom = currentRoom;
                 currentRoom = currentRoom.northRoom;
             } else {
                 System.out.println("You smash your face against a wall.");
             }
         } else if(direction == "s") {
             if(currentRoom.southRoom != null) {
+                prevRoom = currentRoom;
                 currentRoom = currentRoom.southRoom;
             } else {
                 System.out.println("You smash your face against a wall.");
             }
         } else if(direction == "w") {
             if(currentRoom.westRoom != null) {
+                prevRoom = currentRoom;
                 currentRoom = currentRoom.westRoom;
             } else {
                 System.out.println("You smash your face against a wall.");
             }
         } else if(direction == "e") {
             if(currentRoom.eastRoom != null) {
+                prevRoom = currentRoom;
                 currentRoom = currentRoom.eastRoom;
             } else {
                 System.out.println("You smash your face against a wall.");
@@ -74,7 +79,7 @@ public class Player {
         System.out.println("Room = " + currentRoom.name);
    }
 
-   public void grab(String item) {
+   /*public void grab(String item) {
        if(currentRoom.getItem(item) != null) {
             itsItems.put(item, currentRoom.getItem(item));
             currentRoom.removeItem(item);
@@ -93,7 +98,7 @@ public class Player {
        else {
            System.out.println("You don't have that!");
        }
-   }
+   }*/
 
    /*public void use(String item) {
        if(itsItems.get(item) != null) {
@@ -123,5 +128,12 @@ public class Player {
    }
    public void setCurrentRoom(Room pRoom) {
        currentRoom = pRoom;
+   }
+
+   public Room getPrevRoom() {
+    return prevRoom;
+   }
+   public void setPrevRoom(Room pRoom) {
+    prevRoom = pRoom;
    }
 }

@@ -265,7 +265,7 @@ public class Game {
                             if(player1.currentRoom.getEnemy(targetEnemy) == carson && carsonMode == "normal") {
                                 player1.setPower(r.nextInt(36) + 30);
                                 System.out.println("It's effective!");
-                            } else if(player1.currentRoom.getEnemy(targetEnemy) == carson && carsonMode != "normal"){
+                            } else {
                                 player1.setPower(r.nextInt(16) + 15);
                             }
                         }
